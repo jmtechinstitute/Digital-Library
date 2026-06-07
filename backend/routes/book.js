@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router(); // MUKKIYAM: Ithu iruntha thaan 'router' work aagum
+const router = express.Router();
 const multer = require('multer');
 const { v2: cloudinary } = require('cloudinary');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     return {
-      folder: 'digital_library',
+      folder: 'digital_library', // Cloudinary-la intha folder-la thaan images/pdfs store aagum
       resource_type: file.mimetype === 'application/pdf' ? 'raw' : 'image',
     };
   },
@@ -31,6 +31,12 @@ router.post('/upload', upload.fields([
 ]), async (req, res) => {
   try {
     const { title, author, isFree } = req.body;
+    
+    // Check files exist
+    if (!req.files || !req.files.coverImage || !req.files.pdfFile) {
+        return res.status(400).json({ success: false, message: 'Please upload both cover and PDF' });
+    }
+
     const accessType = isFree === 'true' ? 'free' : 'premium';
 
     const newBook = new Book({

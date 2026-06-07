@@ -15,17 +15,25 @@ const UploadForm = ({ onUploadSuccess }) => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('author', author);
-    formData.append('book', bookFile);
-    formData.append('cover', coverFile);
+    // Backend expectation-kooda match aagum (pdfFile & coverImage)
+    formData.append('pdfFile', bookFile); 
+    formData.append('coverImage', coverFile);
+    // Backend-la isFree irukkurathala, default-aa 'true' nu anuppuren
+    formData.append('isFree', 'true'); 
 
     try {
-      await axios.post('https://digital-library-backend-26jp.onrender.com/api/books/upload', formData);
-      alert("Book Uploaded Successfully!");
-      onUploadSuccess(); // Update list after upload
+      await axios.post('https://digital-library-backend-26jp.onrender.com/api/books/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert("Book Uploaded Successfully! 📚✅");
+      onUploadSuccess(); 
       setTitle('');
       setAuthor('');
+      setBookFile(null);
+      setCoverFile(null);
     } catch (error) {
-      alert("Upload Failed!");
+      console.error(error);
+      alert("Upload Failed! Check console for details.");
     } finally {
       setLoading(false);
     }
@@ -67,7 +75,7 @@ const UploadForm = ({ onUploadSuccess }) => {
         className="w-full bg-[#8C52FF] py-3 rounded-lg font-bold hover:bg-[#713be2] transition"
         disabled={loading}
       >
-        {loading ? "Uploading..." : "Publish Book"}
+        {loading ? "Uploading to Server..." : "Publish Book"}
       </button>
     </form>
   );

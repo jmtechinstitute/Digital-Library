@@ -2,26 +2,29 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs'); // Default admin password hash panna thevai
-const User = require('./models/User'); // Default admin save panna thevai
+const bcrypt = require('bcryptjs');
+const User = require('./models/User');
 
-// 👑 MOST IMPORTANT: Load env variables before importing routes!
+// Load environment variables
 dotenv.config();
 
 // Route Imports
-const bookRoutes = require('./routes/book');
-const authRoutes = require('./routes/auth'); 
+const bookRoutes = require('./routes/books'); // File name 'books.js' na inga 'books' nu kudunga
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: "*", // Testing-kku *, deploy pannum pothu unga frontend URL-a mattum allow pannunga
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes Definition
+// Routes
 app.use('/api/books', bookRoutes);
-app.use('/api/auth', authRoutes); 
+app.use('/api/auth', authRoutes);
 
 // Root Route
 app.get('/', (req, res) => {
@@ -35,11 +38,8 @@ mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
     console.log('✅ MongoDB Connected Super-aa!');
     
-    // ==========================================
-    // CREATE DEFAULT ADMIN (safi@admin)
-    // ==========================================
+    // Default Admin Setup
     try {
-      // Admin account already irukka nu check pandrom
       const adminExists = await User.findOne({ email: 'safi@admin' });
       
       if (!adminExists) {
@@ -50,13 +50,11 @@ mongoose.connect(process.env.MONGO_URI)
           username: 'Safi Admin',
           email: 'safi@admin',
           password: hashedPassword,
-          role: 'admin' // Inga direct-aa admin role kuduthudrom
+          role: 'admin'
         });
         
         await defaultAdmin.save();
-        console.log('👑 Default Admin Account Ready! (Email: safi@admin | Pass: safi@18)');
-      } else {
-        console.log('👑 Admin Account already exists.');
+        console.log('👑 Default Admin Account Created!');
       }
     } catch (error) {
       console.error('Admin Setup Error:', error);
