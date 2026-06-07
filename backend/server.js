@@ -9,7 +9,7 @@ const User = require('./models/User');
 dotenv.config();
 
 // Route Imports
-const bookRoutes = require('./routes/books'); // File name 'books.js' na inga 'books' nu kudunga
+const bookRoutes = require('./routes/book'); // File name 'books.js' na inga 'books' nu kudunga
 const authRoutes = require('./routes/auth');
 
 const app = express();
