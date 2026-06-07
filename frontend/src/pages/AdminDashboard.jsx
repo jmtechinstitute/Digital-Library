@@ -11,13 +11,13 @@ const AdminDashboard = () => {
   }, []);
 
   const fetchBooks = async () => {
-    const res = await axios.get('http://localhost:5000/api/books');
+    const res = await axios.get('https://digital-library-backend-26jp.onrender.com/api/books');
     setBooks(res.data.books);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Delete this book?")) {
-      await axios.delete(`http://localhost:5000/api/books/${id}`);
+      await axios.delete(`https://digital-library-backend-26jp.onrender.com/api/books/${id}`);
       fetchBooks();
     }
   };

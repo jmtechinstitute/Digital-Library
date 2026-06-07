@@ -16,7 +16,7 @@ const Home = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/books');
+      const res = await axios.get('https://digital-library-backend-26jp.onrender.com/api/books');
       if (res.data.success) {
         setBooks(res.data.books);
       }

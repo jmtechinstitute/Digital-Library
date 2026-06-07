@@ -22,7 +22,7 @@ const UploadForm = ({ onUploadSuccess }) => {
     formData.append('coverImage', coverImage);
 
     try {
-      await axios.post('http://localhost:5000/api/books/upload', formData);
+      await axios.post('https://digital-library-backend-26jp.onrender.com/api/books/upload', formData);
       alert('Book Published Successfully! ✅');
       setTitle(''); setAuthor(''); setPdfFile(null); setCoverImage(null);
       onUploadSuccess(); // Dashboard list-a update panna
